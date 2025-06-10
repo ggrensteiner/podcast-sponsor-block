@@ -77,7 +77,7 @@ def create_episode_details(playlist_item: dict) -> "EpisodeDetails":
         video_details["description"],
         Author(video_details["channelTitle"], video_details["channelId"]),
         get_best_thumbnail_url(video_details["thumbnails"]),
-        parse_iso_date(content_details["videoPublisthedAt"]),
+        parse_iso_date(content_details["videoPublishedAt"]),
     )
 
 
