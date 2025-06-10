@@ -62,20 +62,22 @@ def get_playlist_details(
         matching_playlist_object["id"],
         playlist_details["title"],
         playlist_details["description"],
-        Author(playlist_details["channelTitle"], playlist_details["channelId"]),
+        Author(playlist_details["channelTitle"],
+               playlist_details["channelId"]),
         get_best_thumbnail_url(playlist_details["thumbnails"]),
     )
 
 
 def create_episode_details(playlist_item: dict) -> "EpisodeDetails":
     video_details = playlist_item["snippet"]
+    content_details = playlist_item["contentDetails"]
     return EpisodeDetails(
         video_details["resourceId"]["videoId"],
         video_details["title"],
         video_details["description"],
         Author(video_details["channelTitle"], video_details["channelId"]),
         get_best_thumbnail_url(video_details["thumbnails"]),
-        parse_iso_date(video_details["publishedAt"]),
+        parse_iso_date(content_details["videoPublisthedAt"]),
     )
 
 
@@ -104,12 +106,13 @@ def remove_duplicates(
 def get_episodes_cached(
     youtube_client: "YoutubeClient", playlist_details: ItemDetails
 ) -> Sequence[EpisodeDetails]:
-    logging.info(f"Grabbing episodes from YouTube playlist {playlist_details.id}")
+    logging.info(
+        f"Grabbing episodes from YouTube playlist {playlist_details.id}")
     all_playlist_items = []
     # noinspection PyUnresolvedReferences
     playlist_items_endpoint = youtube_client.playlistItems()
     playlist_items_request = playlist_items_endpoint.list(
-        part="snippet,status", playlistId=playlist_details.id, maxResults=50
+        part="contentDetails,snippet,status", playlistId=playlist_details.id, maxResults=50
     )
     continue_requesting_playlist_items = True
     while continue_requesting_playlist_items:
@@ -135,7 +138,8 @@ def get_logo_cached(
     feed_options: FeedOptions,
     playlist_details: ItemDetails,
 ) -> str:
-    thumbnail_path = views.get_thumbnail_path(playlist_details.id, feed_options)
+    thumbnail_path = views.get_thumbnail_path(
+        playlist_details.id, feed_options)
     if thumbnail_path is None:
         channel_details = get_channel_details(
             youtube_client, playlist_details.author.id
@@ -160,7 +164,8 @@ class YoutubePlaylistEpisodeFeed:
             developerKey=self.feed_options.service_config.youtube_api_key,
             cache_discovery=False,
         )
-        self.playlist_details = get_playlist_details(self.youtube_client, playlist_id)
+        self.playlist_details = get_playlist_details(
+            self.youtube_client, playlist_id)
         if self.playlist_details is None:
             raise ValueError("Playlist does not exist")
 
