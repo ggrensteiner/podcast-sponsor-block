@@ -22,6 +22,9 @@ but it's generally pretty easy and your app should have documentation online exp
 support basic auth, there is an option you can enable to allow the auth key to be specified as a query parameter. Please
 see [configuration.md](configuration.md) for more info.
 
+## Filtering Young Episodes
+By default, podcast-sponsor-block will include all episodes in the generated RSS feed. However, you can configure a threshold to filter out episodes that are too young by setting the `PODCAST_YOUNG_EPISODE_THRESHOLD_HOURS` environment variable. Episodes published less than this number of hours ago will be excluded from the RSS feed. This is useful for avoiding episodes that are too new to be processed by SponsorBlock.
+
 **Where do I find the ID of a YouTube playlist?**
 
 You can find the ID of a YouTube playlist by navigating to the playlist in your browser. The playlist ID is the

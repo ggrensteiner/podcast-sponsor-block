@@ -1,7 +1,8 @@
 import logging
 from dataclasses import dataclass
 from urllib.parse import urlparse, urlencode
-from datetime import timedelta
+from datetime import timedelta, datetime, timezone
+from operator import attrgetter
 from typing import TypedDict, Optional
 
 from cachetools import cached, TTLCache
@@ -170,7 +171,23 @@ def generate_rss_feed(
         f"Generating RSS feed for YouTube playlist {episode_feed.playlist_details.id}"
     )
     feed_generator = populate_feed_generator(episode_feed, generator_options)
-    for episode in episode_feed:
+    
+    # Apply filtering for young episodes based on configuration
+    threshold_hours = generator_options.service_config.young_episode_threshold_hours
+    
+    # Get all episodes and filter them
+    all_episodes = list(episode_feed)
+    filtered_episodes = []
+    for episode in all_episodes:
+        # Check if the episode is older than the threshold
+        # If episode.published_at + threshold_hours <= current time, then it's old enough to include
+        if episode.published_at + timedelta(hours=threshold_hours) <= datetime.now(timezone.utc):
+            filtered_episodes.append(episode)
+    
+    # Sort filtered episodes by published_at (descending order)
+    filtered_episodes.sort(key=attrgetter("published_at"), reverse=True)
+    
+    for episode in filtered_episodes:
         feed_generator.add_entry(generate_episode_entry(episode, generator_options))
     return feed_generator.rss_str()
 

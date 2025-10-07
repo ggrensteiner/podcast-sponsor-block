@@ -22,3 +22,6 @@ another RSS source but discovered a few problems:
 The recommended way to run podcast-sponsor-block is as a Docker container. See
 [docs/docker.md](docs/docker.md) for more information. Once it's running, see [docs/usage.md](docs/usage.md) for
 usage instructions.
+
+### Filtering Young Episodes
+By default, podcast-sponsor-block will include all episodes in the generated RSS feed. However, you can configure a threshold to filter out episodes that are too young by setting the `PODCAST_YOUNG_EPISODE_THRESHOLD_HOURS` environment variable. Episodes published less than this number of hours ago will be excluded from the RSS feed.

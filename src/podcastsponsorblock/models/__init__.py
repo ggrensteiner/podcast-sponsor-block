@@ -25,6 +25,7 @@ class ServiceConfig:
     categories_to_remove: Sequence[str]
     trusted_hosts: Sequence[str]
     podcast_configs: dict[str, PodcastConfig]
+    young_episode_threshold_hours: int
 
 
 @dataclass

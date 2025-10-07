@@ -94,11 +94,11 @@ def remove_unavailable_items(playlist_items: Sequence[dict]) -> Sequence[dict]:
     )
 
 
-def remove_young(playlist_items: Sequence[dict]) -> Sequence[dict]:
+def remove_young(playlist_items: Sequence[dict], threshold_hours: int) -> Sequence[dict]:
     return tuple(
         item
         for item in playlist_items
-        if parse_iso_date(item["contentDetails"]["videoPublishedAt"]) + timedelta(days=5) > datetime.now(timezone.utc) 
+        if parse_iso_date(item["contentDetails"]["videoPublishedAt"]) + timedelta(hours=threshold_hours) > datetime.now(timezone.utc) 
     )
 
 
@@ -133,8 +133,7 @@ def get_episodes_cached(
         )
         continue_requesting_playlist_items = playlist_items_request is not None
     sorted_playlist_episodes = sorted(
-        map(create_episode_details, remove_young(
-            remove_unavailable_items(all_playlist_items))),
+        map(create_episode_details, remove_unavailable_items(all_playlist_items)),
         key=attrgetter("published_at"),
     )
     return remove_duplicates(sorted_playlist_episodes, attrgetter("id"))

@@ -93,6 +93,7 @@ def populate_service_config(source: MutableMapping) -> ServiceConfig:
                 source.get("PODCAST_TRUSTED_HOSTS", None)
             ),
             podcast_configs=parse_podcast_configs(data_path / "podcasts.ini"),
+            young_episode_threshold_hours=int(source.get("PODCAST_YOUNG_EPISODE_THRESHOLD_HOURS", "3")),
         )
     except KeyError as exception:
         # noinspection PyUnresolvedReferences
