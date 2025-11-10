@@ -21,6 +21,7 @@ def download_m4a_audio(
 ):
     youtube_dlp_options = {
         "quiet": True,
+        "verbose": False,
         "outtmpl": str(output_path.absolute().resolve()),
         "format": "bestaudio[ext=m4a]",
         "postprocessors": [
